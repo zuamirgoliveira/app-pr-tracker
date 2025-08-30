@@ -22,10 +22,13 @@ export interface AzureReposResponse {
   count: number;
 }
 
+export type SearchType = 'projects' | 'repositories';
+
 export interface ConnectionForm {
   organization: string;
-  project: string;
+  project?: string; // Opcional agora
   token: string;
+  searchType: SearchType;
 }
 
 export interface PullRequest {
