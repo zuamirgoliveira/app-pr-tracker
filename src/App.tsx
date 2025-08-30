@@ -1,50 +1,75 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import React, { useState } from "react";
+import LoginForm from "./components/LoginForm";
+import RepositoryList from "./components/RepositoryList";
+import { AzureDevOpsService } from "./services/azure";
+import { Repository, ConnectionForm } from "./types";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [connectionInfo, setConnectionInfo] = useState<ConnectionForm | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const handleLogin = async (form: ConnectionForm) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const repos = await AzureDevOpsService.getRepositories(
+        form.organization,
+        form.project,
+        form.token
+      );
+
+      setRepositories(repos);
+      setConnectionInfo(form);
+      setIsConnected(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro desconhecido");
+      setRepositories([]);
+      setConnectionInfo(null);
+      setIsConnected(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDisconnect = () => {
+    setRepositories([]);
+    setConnectionInfo(null);
+    setIsConnected(false);
+    setError(null);
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="min-h-screen bg-gradient-to-br from-azure-50 to-blue-50 py-8">
+      <div className="container mx-auto px-4">
+        {!isConnected ? (
+          <LoginForm
+            onSubmit={handleLogin}
+            isLoading={isLoading}
+            error={error}
+          />
+        ) : (
+          connectionInfo && (
+            <RepositoryList
+              repositories={repositories}
+              organization={connectionInfo.organization}
+              project={connectionInfo.project}
+              onDisconnect={handleDisconnect}
+            />
+          )
+        )}
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white bg-opacity-90 border-t border-gray-200 py-2">
+        <div className="text-center text-xs text-gray-500">
+          Azure Repos Client - Feito com ❤️ usando Tauri + React + TypeScript
+        </div>
+      </footer>
+    </div>
   );
 }
 
