@@ -61,6 +61,13 @@ export default function PullRequestList({
     <div className="pr-list-container">
       {/* Header Section */}
       <div className="pr-header">
+        <div className="banner-container">
+          <img 
+            src="/banner-pr-tracker.png" 
+            alt="PR Tracker Banner" 
+            className="page-banner"
+          />
+        </div>
         <h1 className="pr-title">Pull Requests</h1>
         <p className="pr-repo-name">{repository.name}</p>
         <p className="pr-meta-info">

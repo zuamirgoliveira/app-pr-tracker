@@ -5,6 +5,7 @@ import RepositoryList from "./components/RepositoryList";
 import PullRequestList from "./components/PullRequestList";
 import { AzureDevOpsService } from "./services/azure";
 import { Repository, Project, ConnectionForm, PullRequest } from "./types";
+import "./App.css";
 
 type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
 
@@ -24,7 +25,6 @@ function App() {
 
     try {
       if (form.searchType === 'projects') {
-        // Buscar projetos
         const projectList = await AzureDevOpsService.getProjects(
           form.organization,
           form.token
@@ -33,7 +33,6 @@ function App() {
         setConnectionInfo(form);
         setCurrentPage('projects');
       } else {
-        // Buscar repositórios
         if (!form.project) {
           throw new Error('Projeto é obrigatório para buscar repositórios');
         }
@@ -181,15 +180,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
-      <div className="container mx-auto px-4 py-8">
-        {renderCurrentPage()}
-      </div>
-
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-slate-900 bg-opacity-90 border-t border-slate-700 py-2">
-        <div className="text-center text-xs text-slate-400">
-          Azure Repos Client - Feito com ❤️ usando Tauri + React + TypeScript
+    <div>
+      {renderCurrentPage()}
+      
+      <footer className="app-footer">
+        <div className="footer-content">
+          Azure Repos Client - Feito com <span className="heart">❤️</span> usando Tauri + React + TypeScript
         </div>
       </footer>
     </div>

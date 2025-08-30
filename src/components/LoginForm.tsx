@@ -39,44 +39,48 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
   };
 
   return (
-    <div className="app-header">
-      <img 
-        src="/banner-pr-tracker.png" 
-        alt="PR Tracker" 
-        className="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg"
-      />
-      <h1 className="app-title">Azure Repos Client</h1>
-      <p className="app-subtitle">
-        Conecte-se ao Azure DevOps para listar seus projetos ou repositórios
-      </p>
+    <div className="login-container">
+      <div className="login-header">
+        <div className="banner-container">
+          <img 
+            src="/banner-pr-tracker.png" 
+            alt="PR Tracker Banner" 
+            className="page-banner"
+          />
+        </div>
+        <h1 className="login-title">Azure Repos Client</h1>
+        <p className="login-subtitle">
+          Conecte-se ao Azure DevOps para listar seus projetos ou repositórios
+        </p>
+      </div>
 
-      <div className="main-container">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="login-form-container">
+        <form onSubmit={handleSubmit} className="login-form">
           {/* Search Type Selection */}
           <div className="form-group">
             <label className="form-label">Tipo de Pesquisa</label>
-            <div className="flex gap-4 mt-2">
-              <label className="flex items-center cursor-pointer">
+            <div className="search-type-group">
+              <label className="radio-label">
                 <input
                   type="radio"
                   name="searchType"
                   value="projects"
                   checked={searchType === 'projects'}
                   onChange={(e) => setSearchType(e.target.value as SearchType)}
-                  className="mr-2 text-blue-500"
+                  className="radio-input"
                 />
-                <span className="text-slate-200">Projetos</span>
+                <span className="radio-text">Buscar Projetos</span>
               </label>
-              <label className="flex items-center cursor-pointer">
+              <label className="radio-label">
                 <input
                   type="radio"
                   name="searchType"
                   value="repositories"
                   checked={searchType === 'repositories'}
                   onChange={(e) => setSearchType(e.target.value as SearchType)}
-                  className="mr-2 text-blue-500"
+                  className="radio-input"
                 />
-                <span className="text-slate-200">Repositórios</span>
+                <span className="radio-text">Buscar Repositórios</span>
               </label>
             </div>
           </div>
@@ -139,7 +143,16 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
                 className="toggle-visibility-btn"
                 disabled={isLoading}
               >
-                {showToken ? "👁️" : "🔒"}
+                {showToken ? (
+                  <svg className="visibility-icon" viewBox="0 0 24 24">
+                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                ) : (
+                  <svg className="visibility-icon" viewBox="0 0 24 24">
+                    <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
@@ -148,7 +161,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
           <button
             type="submit"
             disabled={!isFormValid() || isLoading}
-            className="btn btn-primary w-full"
+            className="btn btn-primary"
           >
             {isLoading ? (
               <>
@@ -162,23 +175,29 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
 
           {/* Error Message */}
           {error && (
-            <div className="info-message warning-message">
-              ⚠️ {error}
+            <div className="alert-message alert-error">
+              <svg className="alert-icon" viewBox="0 0 24 24">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <span>{error}</span>
             </div>
           )}
 
           {/* Info Message */}
-          <div className="info-message">
-            ℹ️ O token não será armazenado permanentemente
+          <div className="alert-message alert-info">
+            <svg className="alert-icon" viewBox="0 0 24 24">
+              <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>O token não será armazenado permanentemente</span>
           </div>
 
           {/* Help Link */}
-          <div className="text-center">
+          <div className="help-link">
             <a
               href="https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate"
               target="_blank"
               rel="noopener noreferrer"
-              className="link text-sm"
+              className="link"
             >
               Como criar um Personal Access Token?
             </a>

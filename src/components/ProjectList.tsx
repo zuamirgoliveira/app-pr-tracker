@@ -9,71 +9,65 @@ interface ProjectListProps {
   onBackToLogin: () => void;
 }
 
-const ProjectList: React.FC<ProjectListProps> = ({ 
-  projects, 
+export default function ProjectList({
+  projects,
   organization,
   isLoading = false,
   onProjectSelect,
   onBackToLogin
-}) => {
-
-  const openRepository = (url: string) => {
-    // No Tauri, você pode usar a API para abrir URLs
-    window.open(url, '_blank');
-  };
-
+}: ProjectListProps) {
   return (
-    <div className="app-header max-w-6xl mx-auto">
-      <img 
-        src="/banner-pr-tracker.png" 
-        alt="PR Tracker" 
-        className="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg"
-      />
-      <h1 className="app-title text-2xl font-bold text-gray-800 mb-2">
-        Projetos - {organization}
-      </h1>
-      <p className="app-subtitle text-gray-600">
-        Encontrados {projects.length} projeto{projects.length !== 1 ? 's' : ''}. Selecione um projeto para ver seus repositórios.
-      </p>
+    <div className="projects-container">
+      <div className="projects-header">
+        <div className="banner-container">
+          <img 
+            src="/banner-pr-tracker.png" 
+            alt="PR Tracker Banner" 
+            className="page-banner"
+          />
+        </div>
+        <h1 className="projects-title">Projetos - {organization}</h1>
+        <p className="projects-subtitle">
+          Encontrados {projects.length} projeto(s). Selecione um projeto para ver seus repositórios.
+        </p>
+      </div>
 
-      <div className="main-container">
+      <div className="projects-main-container">
         {/* Header Actions */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="nav-buttons">
           <button
             onClick={onBackToLogin}
-            className="btn btn-secondary bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
+            className="nav-btn"
             disabled={isLoading}
           >
-            ← Voltar ao Login
+            <svg className="nav-icon" viewBox="0 0 24 24">
+              <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Voltar ao Login
           </button>
         </div>
 
         {/* Projects List */}
         {projects.length === 0 ? (
-          <div className="info-message bg-white shadow-sm rounded-lg p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📁</div>
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              Nenhum projeto encontrado
-            </h3>
-            <p className="text-gray-600">
-              Este projeto não possui projetos ou você não tem permissão para visualizá-los.
-            </p>
+          <div className="empty-message">
+            <svg className="alert-icon" viewBox="0 0 24 24">
+              <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Nenhum projeto encontrado nesta organização.</span>
           </div>
         ) : (
-          <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="projects-list">
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="project-card bg-white shadow-sm rounded-lg border hover:shadow-md transition-shadow p-6"
+                className="project-card"
                 onClick={() => !isLoading && onProjectSelect(project)}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="project-name font-semibold text-gray-800 text-lg leading-tight">
-                      {project.name}
-                    </h3>
+                <div className="project-card-content">
+                  <div className="project-info">
+                    <h3 className="project-name">{project.name}</h3>
                     {project.description && (
-                      <p className="project-description text-azure-600">{project.description}</p>
+                      <p className="project-description">{project.description}</p>
                     )}
                     <div className="project-meta">
                       <span className={`status-badge status-${project.state?.toLowerCase()}`}>
@@ -93,7 +87,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                         onProjectSelect(project);
                       }}
                       disabled={isLoading}
-                      className="btn btn-sm btn-primary flex-1 bg-azure-600 hover:bg-azure-700 text-white text-sm px-3 py-2 rounded-md transition-colors"
+                      className="btn btn-primary btn-sm"
                     >
                       Ver Repositórios →
                     </button>
@@ -113,6 +107,4 @@ const ProjectList: React.FC<ProjectListProps> = ({
       </div>
     </div>
   );
-};
-
-export default ProjectList;
+}
