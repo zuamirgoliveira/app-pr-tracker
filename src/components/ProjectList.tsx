@@ -24,6 +24,11 @@ const ProjectList: React.FC<ProjectListProps> = ({
 
   return (
     <div className="app-header max-w-6xl mx-auto">
+      <img 
+        src="/banner-pr-tracker.png" 
+        alt="PR Tracker" 
+        className="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg"
+      />
       <h1 className="app-title text-2xl font-bold text-gray-800 mb-2">
         Projetos - {organization}
       </h1>

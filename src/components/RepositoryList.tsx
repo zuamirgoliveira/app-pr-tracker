@@ -5,6 +5,8 @@ interface RepositoryListProps {
   repositories: Repository[];
   organization: string;
   project: string;
+  isLoading?: boolean;
+  onPullRequestsSelect: (repository: Repository) => void;
   onBackToLogin: () => void;
   onBackToProjects?: () => void;
 }
@@ -13,152 +15,139 @@ export default function RepositoryList({
   repositories,
   organization,
   project,
+  isLoading = false,
+  onPullRequestsSelect,
   onBackToLogin,
   onBackToProjects
 }: RepositoryListProps) {
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const openRepository = (url: string) => {
-    // No Tauri, você pode usar a API para abrir URLs
-    window.open(url, '_blank');
-  };
-
   return (
-    <div className="app-header">
-      <h1 className="app-title">Repositórios - {project}</h1>
-      <p className="app-subtitle">
-        {organization} • {repositories.length} repositório(s) encontrado(s)
-      </p>
+    <div className="min-h-screen flex flex-col items-center justify-start p-4">
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-white mb-2 text-shadow">
+          Repositórios - {project}
+        </h1>
+        <p className="text-lg text-slate-300">
+          {organization} • {repositories.length} repositório(s) encontrado(s)
+        </p>
+      </div>
 
-      <div className="main-container">
+      {/* Main Container */}
+      <div className="w-full max-w-4xl bg-slate-800/50 backdrop-blur-lg border border-slate-600 rounded-2xl p-8 shadow-2xl">
         {/* Header Actions */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex gap-2">
+        <div className="flex flex-wrap gap-3 mb-6">
+          <button
+            onClick={onBackToLogin}
+            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            disabled={isLoading}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Login
+          </button>
+          {onBackToProjects && (
             <button
-              onClick={onBackToLogin}
-              className="btn btn-secondary"
+              onClick={onBackToProjects}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center gap-2"
+              disabled={isLoading}
             >
-              ← Login
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Projetos
             </button>
-            {onBackToProjects && (
-              <button
-                onClick={onBackToProjects}
-                className="btn btn-secondary"
-              >
-                ← Projetos
-            </button>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Repository Grid */}
+        {/* Repositories List */}
         {repositories.length === 0 ? (
-          <div className="bg-white shadow-sm rounded-lg p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📁</div>
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              Nenhum repositório encontrado
-            </h3>
-            <p className="text-gray-600">
-              Este projeto não possui repositórios ou você não tem permissão para visualizá-los.
-            </p>
+          <div className="flex items-center gap-3 p-6 bg-blue-900/30 border border-blue-700/50 rounded-lg text-blue-200">
+            <svg className="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Nenhum repositório encontrado neste projeto.</span>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid gap-4">
             {repositories.map((repo) => (
               <div
                 key={repo.id}
-                className="bg-white shadow-sm rounded-lg border hover:shadow-md transition-shadow"
+                className="bg-slate-700/30 border border-slate-600 rounded-xl p-6 hover:bg-slate-700/50 transition-all duration-200 hover:border-blue-500/50"
               >
-                <div className="p-6">
-                  {/* Repository Name */}
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-gray-800 text-lg leading-tight">
-                      {repo.name}
-                    </h3>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full ml-2 flex-shrink-0">
-                      Git
-                    </span>
-                  </div>
-
-                  {/* Repository Info */}
-                  <div className="space-y-2 text-sm text-gray-600 mb-4">
-                    <div className="flex items-center">
-                      <span className="font-medium mr-2">ID:</span>
-                      <span className="font-mono text-xs bg-gray-50 px-2 py-1 rounded">
-                        {repo.id.slice(0, 8)}...
-                      </span>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    {/* Repository Header */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-7v8.3c0 1.2-.8 2.3-2 2.7L12 18l-5-2c-1.2-.4-2-1.5-2-2.7V4h14zM7 4v6l5 2 5-2V4H7z" />
+                      </svg>
+                      <h3 className="text-xl font-semibold text-white">
+                        {repo.name}
+                      </h3>
                     </div>
-                    
-                    {repo.defaultBranch && (
-                      <div className="flex items-center">
-                        <span className="font-medium mr-2">Branch padrão:</span>
-                        <span className="text-azure-600">{repo.defaultBranch}</span>
-                      </div>
-                    )}
 
-                    {repo.size > 0 && (
-                      <div className="flex items-center">
-                        <span className="font-medium mr-2">Tamanho:</span>
-                        <span>{formatFileSize(repo.size)}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openRepository(repo.webUrl)}
-                      className="flex-1 bg-azure-600 hover:bg-azure-700 text-white text-sm px-3 py-2 rounded-md transition-colors"
-                    >
-                      Abrir no Browser
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(repo.remoteUrl);
-                      }}
-                      className="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-sm px-3 py-2 rounded-md transition-colors"
-                      title="Copiar URL de clone"
-                    >
-                      Copiar Clone URL
-                    </button>
-                  </div>
-
-                  {/* URLs Section */}
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <details className="group">
-                      <summary className="cursor-pointer text-xs text-gray-500 hover:text-gray-700 select-none">
-                        Ver URLs completas
-                      </summary>
-                      <div className="mt-2 space-y-2 text-xs">
-                        <div>
-                          <span className="font-medium text-gray-600">HTTPS:</span>
-                          <div className="font-mono bg-gray-50 p-2 rounded text-gray-800 break-all">
-                            {repo.remoteUrl}
-                          </div>
+                    {/* Repository Info */}
+                    <div className="space-y-2 text-sm">
+                      {repo.defaultBranch && (
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>Branch padrão: <code className="bg-slate-800 px-2 py-1 rounded text-blue-300">{repo.defaultBranch.replace('refs/heads/', '')}</code></span>
                         </div>
-                        {repo.sshUrl && (
-                          <div>
-                            <span className="font-medium text-gray-600">SSH:</span>
-                            <div className="font-mono bg-gray-50 p-2 rounded text-gray-800 break-all">
-                              {repo.sshUrl}
-                            </div>
-                          </div>
-                        )}
+                      )}
+                      
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <span>ID: <code className="bg-slate-800 px-2 py-1 rounded text-blue-300">{repo.id}</code></span>
                       </div>
-                    </details>
+
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <a 
+                          href={repo.webUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 underline"
+                        >
+                          Ver no Azure DevOps
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="ml-6 flex flex-col gap-2">
+                    <button
+                      onClick={() => onPullRequestsSelect(repo)}
+                      disabled={isLoading}
+                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-600 disabled:to-slate-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none transition-all duration-200 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      Listar Pull Requests
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         )}
+
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm flex flex-col items-center justify-center gap-4 rounded-2xl">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <span className="text-slate-200 font-medium">Carregando pull requests...</span>
+          </div>
+        )}
       </div>
     </div>
   );
-};
+}

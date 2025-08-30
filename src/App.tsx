@@ -2,15 +2,18 @@ import { useState } from "react";
 import LoginForm from "./components/LoginForm";
 import ProjectList from "./components/ProjectList";
 import RepositoryList from "./components/RepositoryList";
+import PullRequestList from "./components/PullRequestList";
 import { AzureDevOpsService } from "./services/azure";
-import { Repository, Project, ConnectionForm, SearchType } from "./types";
+import { Repository, Project, ConnectionForm, PullRequest } from "./types";
 
-type Page = 'login' | 'projects' | 'repositories';
+type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('login');
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
   const [connectionInfo, setConnectionInfo] = useState<ConnectionForm | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,10 +78,35 @@ function App() {
     }
   };
 
+  const handlePullRequestsSelect = async (repository: Repository) => {
+    if (!connectionInfo || !connectionInfo.project) return;
+    
+    setIsLoading(true);
+    setError(null);
+    setSelectedRepository(repository);
+
+    try {
+      const prs = await AzureDevOpsService.getPullRequests(
+        connectionInfo.organization,
+        connectionInfo.project,
+        repository.id,
+        connectionInfo.token
+      );
+      setPullRequests(prs);
+      setCurrentPage('pullrequests');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao buscar pull requests");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleBackToLogin = () => {
     setCurrentPage('login');
     setRepositories([]);
     setProjects([]);
+    setPullRequests([]);
+    setSelectedRepository(null);
     setConnectionInfo(null);
     setError(null);
   };
@@ -86,6 +114,15 @@ function App() {
   const handleBackToProjects = () => {
     setCurrentPage('projects');
     setRepositories([]);
+    setPullRequests([]);
+    setSelectedRepository(null);
+    setError(null);
+  };
+
+  const handleBackToRepositories = () => {
+    setCurrentPage('repositories');
+    setPullRequests([]);
+    setSelectedRepository(null);
     setError(null);
   };
 
@@ -117,8 +154,24 @@ function App() {
             repositories={repositories}
             organization={connectionInfo.organization}
             project={connectionInfo.project || ''}
+            isLoading={isLoading}
+            onPullRequestsSelect={handlePullRequestsSelect}
             onBackToLogin={handleBackToLogin}
             onBackToProjects={connectionInfo.searchType === 'projects' ? handleBackToProjects : undefined}
+          />
+        );
+      
+      case 'pullrequests':
+        return connectionInfo && selectedRepository && (
+          <PullRequestList
+            pullRequests={pullRequests}
+            repository={selectedRepository}
+            organization={connectionInfo.organization}
+            project={connectionInfo.project || ''}
+            isLoading={isLoading}
+            onBackToRepositories={handleBackToRepositories}
+            onBackToProjects={connectionInfo.searchType === 'projects' ? handleBackToProjects : undefined}
+            onBackToLogin={handleBackToLogin}
           />
         );
       
