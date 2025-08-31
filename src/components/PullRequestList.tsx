@@ -128,7 +128,7 @@ export default function PullRequestList({
               type="button"
               title="Limpar filtro"
             >
-              ✕ {statusFilter}
+              ✕ Limpar filtro
             </button>
           )}
         </div>
