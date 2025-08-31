@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Project } from "../types";
 
 interface ProjectListProps {
@@ -16,6 +16,17 @@ export default function ProjectList({
   onProjectSelect,
   onBackToLogin
 }: ProjectListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredProjects = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return projects;
+    }
+    return projects.filter(project =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [projects, searchTerm]);
+
   return (
     <div className="projects-container">
       <div className="projects-header">
@@ -47,17 +58,54 @@ export default function ProjectList({
           </button>
         </div>
 
+        {/* Search Section */}
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <svg className="search-icon" viewBox="0 0 24 24">
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar projeto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+              disabled={isLoading}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="search-clear"
+                type="button"
+                title="Limpar busca"
+              >
+                ×
+              </button>
+            )}
+          </div>
+          {searchTerm && (
+            <p className="search-results">
+              {filteredProjects.length} projeto(s) encontrado(s) para "{searchTerm}"
+            </p>
+          )}
+        </div>
+
         {/* Projects List */}
-        {projects.length === 0 ? (
+        {filteredProjects.length === 0 ? (
           <div className="empty-message">
             <svg className="alert-icon" viewBox="0 0 24 24">
               <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Nenhum projeto encontrado nesta organização.</span>
+            <span>
+              {searchTerm 
+                ? `Nenhum projeto encontrado para "${searchTerm}".`
+                : "Nenhum projeto encontrado nesta organização."
+              }
+            </span>
           </div>
         ) : (
-          <div className="projects-list">
-            {projects.map((project) => (
+          <div className="projects-grid">
+            {filteredProjects.map((project) => (
               <div
                 key={project.id}
                 className="project-card"

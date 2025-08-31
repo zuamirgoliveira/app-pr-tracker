@@ -6,6 +6,8 @@ import PullRequestList from "./components/PullRequestList";
 import { AzureDevOpsService } from "./services/azure";
 import { Repository, Project, ConnectionForm, PullRequest } from "./types";
 import "./App.css";
+import "./styles/search.css";
+import "./styles/status-filter.css";
 
 type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
 

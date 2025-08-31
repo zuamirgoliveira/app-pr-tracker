@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useMemo } from "react";
 import { Repository } from "../types";
 
 interface RepositoryListProps {
@@ -20,6 +20,17 @@ export default function RepositoryList({
   onBackToLogin,
   onBackToProjects
 }: RepositoryListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredRepositories = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return repositories;
+    }
+    return repositories.filter(repository =>
+      repository.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [repositories, searchTerm]);
+
   return (
     <div className="repositories-container">
       <div className="repositories-header">
@@ -63,17 +74,54 @@ export default function RepositoryList({
           )}
         </div>
 
+        {/* Search Section */}
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <svg className="search-icon" viewBox="0 0 24 24">
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar repositório..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+              disabled={isLoading}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="search-clear"
+                type="button"
+                title="Limpar busca"
+              >
+                ×
+              </button>
+            )}
+          </div>
+          {searchTerm && (
+            <p className="search-results">
+              {filteredRepositories.length} repositório(s) encontrado(s) para "{searchTerm}"
+            </p>
+          )}
+        </div>
+
         {/* Repositories List */}
-        {repositories.length === 0 ? (
+        {filteredRepositories.length === 0 ? (
           <div className="empty-message">
             <svg className="alert-icon" viewBox="0 0 24 24">
               <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Nenhum repositório encontrado neste projeto.</span>
+            <span>
+              {searchTerm 
+                ? `Nenhum repositório encontrado para "${searchTerm}".`
+                : "Nenhum repositório encontrado neste projeto."
+              }
+            </span>
           </div>
         ) : (
           <div className="repositories-grid">
-            {repositories.map((repo) => (
+            {filteredRepositories.map((repo) => (
               <div key={repo.id} className="repository-card">
                 <div className="repository-card-content">
                   <div className="repository-info">

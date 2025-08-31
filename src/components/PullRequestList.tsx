@@ -1,6 +1,6 @@
 import { PullRequest, Repository } from "../types";
 import { PullRequestController } from "../controllers/PullRequestController";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 interface PullRequestListProps {
   pullRequests: PullRequest[];
@@ -24,13 +24,26 @@ export default function PullRequestList({
   onBackToLogin
 }: PullRequestListProps) {
   const controller = useMemo(() => new PullRequestController(), []);
+  const [statusFilter, setStatusFilter] = useState("Active");
+
+  const availableStatuses = useMemo(() => {
+    const statuses = Array.from(new Set(pullRequests.map(pr => pr.status)));
+    return ["ALL", ...statuses];
+  }, [pullRequests]);
+
+  const filteredPullRequests = useMemo(() => {
+    if (statusFilter === "ALL") {
+      return pullRequests;
+    }
+    return pullRequests.filter(pr => pr.status.toLowerCase() === statusFilter.toLowerCase());
+  }, [pullRequests, statusFilter]);
 
   const processedPullRequests = useMemo(() => {
-    const sortedPullRequests = controller.sortPullRequests(pullRequests);
+    const sortedPullRequests = controller.sortPullRequests(filteredPullRequests);
     return sortedPullRequests.map(pr => 
       controller.processPullRequestData(pr, organization, project)
     );
-  }, [pullRequests, organization, project, controller]);
+  }, [filteredPullRequests, organization, project, controller]);
 
   const handleCopyToClipboard = async (pr: PullRequest) => {
     await controller.handleCopyToClipboard(pr, organization, project);
@@ -54,7 +67,8 @@ export default function PullRequestList({
         <h1 className="pr-title">Pull Requests</h1>
         <p className="pr-repo-name">{repository.name}</p>
         <p className="pr-meta-info">
-          {organization} / {project} • {pullRequests.length} PR(s) encontrado(s)
+          {organization} / {project} • {filteredPullRequests.length} PR(s) encontrado(s)
+          {statusFilter !== "ALL" && ` (${statusFilter})`}
         </p>
       </div>
 
@@ -87,11 +101,48 @@ export default function PullRequestList({
           </button>
         </div>
 
+        {/* Status Filter */}
+        <div className="status-filter-container">
+          <div className="status-filter-wrapper">
+            <label htmlFor="status-filter" className="filter-label">
+              Filtrar por status:
+            </label>
+            <select
+              id="status-filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="status-filter-select"
+              disabled={isLoading}
+            >
+              {availableStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {status === "ALL" ? "Todos os Status" : status}
+                </option>
+              ))}
+            </select>
+          </div>
+          {statusFilter !== "ALL" && (
+            <button
+              onClick={() => setStatusFilter("ALL")}
+              className="filter-clear-btn"
+              type="button"
+              title="Limpar filtro"
+            >
+              ✕ {statusFilter}
+            </button>
+          )}
+        </div>
+
         {/* Pull Requests List */}
-        {pullRequests.length === 0 ? (
+        {filteredPullRequests.length === 0 ? (
           <div className="pr-empty-message">
             <span className="info-icon">ℹ️</span>
-            <span>Nenhum pull request encontrado neste repositório.</span>
+            <span>
+              {statusFilter === "ALL" 
+                ? "Nenhum pull request encontrado neste repositório."
+                : `Nenhum pull request com status "${statusFilter}" encontrado.`
+              }
+            </span>
           </div>
         ) : (
           <div className="pr-list">
