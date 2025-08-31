@@ -48,6 +48,47 @@ body {
   width: 100%;
 }
 
+/* Banner Styles */
+.banner-container {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-banner {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
+}
+
+.page-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+/* Adjust banner sizes for different pages */
+.login-container .page-banner {
+  max-width: 400px;
+  width: 100%;
+}
+
+.projects-container .page-banner,
+.repositories-container .page-banner,
+.pr-list-container .page-banner {
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Remove old logo styles since we're using banner now */
+.login-logo {
+  display: none;
+}
+
 /* Login Form Styles */
 .login-container {
   min-height: 100vh;
@@ -239,6 +280,11 @@ body {
 .btn-secondary:hover:not(:disabled) {
   background: rgba(51, 65, 85, 1);
   border-color: var(--primary-light);
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
 }
 
 .spinner {
@@ -486,11 +532,6 @@ body {
   margin-left: 1rem;
 }
 
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
-}
-
 /* Repository List Styles */
 .repositories-container {
   min-height: 100vh;
@@ -633,7 +674,7 @@ body {
   gap: 0.5rem;
 }
 
-/* Pull Request List Styles - já definidos anteriormente */
+/* Pull Request List Styles */
 .pr-list-container {
   min-height: 100vh;
   display: flex;
@@ -711,25 +752,6 @@ body {
   max-height: 70vh;
   overflow-y: auto;
   padding-right: 0.5rem;
-}
-
-/* Custom scrollbar */
-.pr-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.pr-list::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 4px;
-}
-
-.pr-list::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5);
-  border-radius: 4px;
-}
-
-.pr-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.7);
 }
 
 .pr-card {
@@ -878,10 +900,6 @@ body {
   font-size: 0.875rem;
 }
 
-.pr-reviewers {
-  grid-column: 1 / -1;
-}
-
 .detail-content {
   color: var(--text-secondary);
 }
@@ -913,44 +931,91 @@ body {
   opacity: 0.7;
 }
 
-.reviewers-content {
+/* Reviewers Vertical Layout - New Styles */
+.pr-reviewers-section {
+  grid-column: 1 / -1;
+  align-items: flex-start;
+}
+
+.reviewers-content-vertical {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
 }
 
-.reviewers-list {
+.reviewers-vertical-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-.reviewer-item {
+.reviewer-item-vertical {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
 }
 
-.reviewer-name {
+.reviewer-item-vertical:hover {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.reviewer-vote-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  cursor: help;
+}
+
+.reviewer-name-vertical {
   color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  flex: 1;
 }
 
-.reviewer-vote {
-  padding: 0.125rem 0.25rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
+/* Reviewer Status Icons and Colors */
 .vote-approved {
   background: rgba(16, 185, 129, 0.2);
   color: var(--success);
+  border-color: var(--success);
 }
 
 .vote-rejected {
   background: rgba(239, 68, 68, 0.2);
   color: var(--error);
+  border-color: var(--error);
+}
+
+.vote-waiting {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+/* Update reviewer item vertical based on vote status */
+.reviewer-item-vertical:has(.vote-approved) {
+  border-left-color: var(--success);
+}
+
+.reviewer-item-vertical:has(.vote-rejected) {
+  border-left-color: var(--error);
+}
+
+.reviewer-item-vertical:has(.vote-waiting) {
+  border-left-color: var(--warning);
 }
 
 /* Loading States */
@@ -1017,6 +1082,39 @@ body {
   animation: pulse 2s infinite;
 }
 
+/* SLA Styles */
+.sla-value {
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.sla-fresh {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.sla-moderate {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.sla-old {
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.sla-critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
@@ -1026,74 +1124,24 @@ body {
   }
 }
 
-/* Banner Styles */
-.banner-container {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.page-banner {
-  max-width: 100%;
-  height: auto;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border: 2px solid rgba(37, 99, 235, 0.3);
-  transition: all 0.3s ease;
-}
-
-.page-banner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  border-color: rgba(37, 99, 235, 0.5);
-}
-
-/* Adjust banner sizes for different pages */
-.login-container .page-banner {
-  max-width: 400px;
-  width: 100%;
-}
-
-.projects-container .page-banner,
-.repositories-container .page-banner,
-.pr-list-container .page-banner {
-  max-width: 500px;
-  width: 100%;
-}
-
-/* Remove old logo styles since we're using banner now */
-.login-logo {
-  display: none;
-}
-
-/* Responsive banner adjustments */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (min-width: 768px) {
+  .pr-details {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .banner-container {
+    margin-bottom: 1.5rem;
+  }
+  
   .login-container .page-banner {
-    max-width: 300px;
+    max-width: 400px;
   }
   
   .projects-container .page-banner,
   .repositories-container .page-banner,
   .pr-list-container .page-banner {
-    max-width: 350px;
-  }
-}
-
-@media (max-width: 480px) {
-  .page-banner {
-    max-width: 280px;
-  }
-  
-  .banner-container {
-    margin-bottom: 1rem;
-  }
-}
-
-/* Responsive Design */
-@media (min-width: 768px) {
-  .pr-details {
-    grid-template-columns: 1fr 1fr;
+    max-width: 500px;
   }
 }
 
@@ -1146,6 +1194,31 @@ body {
     flex-direction: column;
     gap: 0.75rem;
   }
+  
+  .login-container .page-banner {
+    max-width: 300px;
+  }
+  
+  .projects-container .page-banner,
+  .repositories-container .page-banner,
+  .pr-list-container .page-banner {
+    max-width: 350px;
+  }
+  
+  .reviewer-item-vertical {
+    padding: 0.375rem;
+    gap: 0.5rem;
+  }
+  
+  .reviewer-vote-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .reviewer-name-vertical {
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1161,5 +1234,13 @@ body {
   .repositories-main-container,
   .pr-main-container {
     padding: 0.75rem;
+  }
+  
+  .page-banner {
+    max-width: 280px;
+  }
+  
+  .banner-container {
+    margin-bottom: 1rem;
   }
 }
