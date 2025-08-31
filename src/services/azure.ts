@@ -51,7 +51,7 @@ export class AzureDevOpsService {
     token: string
   ): Promise<PullRequest[]> {
     try {
-      const url = `https://dev.azure.com/${organization}/${project}/_apis/git/repositories/${repositoryId}/pullrequests?api-version=7.0`;
+      const url = `https://dev.azure.com/${organization}/${project}/_apis/git/repositories/${repositoryId}/pullrequests?searchCriteria.status=all&api-version=7.0`;
       
       const response = await axios.get<AzurePullRequestsResponse>(url, {
         headers: {
