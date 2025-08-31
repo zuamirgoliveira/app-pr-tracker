@@ -31,6 +31,7 @@ export class PullRequestController {
     const sla = this.utils.calculateSLA(pr.creationDate, closedDate);
     const slaColorClass = this.utils.getSLAColorClass(pr.creationDate, closedDate);
     const webUrl = this.utils.formatWebUrl(organization, project, pr);
+    const titleValidation = this.utils.validatePRTitle(pr.title);
     
     return {
       ...pr,
@@ -38,7 +39,8 @@ export class PullRequestController {
       sla,
       slaColorClass,
       webUrl,
-      formattedCreationDate: this.utils.formatDate(pr.creationDate)
+      formattedCreationDate: this.utils.formatDate(pr.creationDate),
+      titleValidation
     };
   }
 

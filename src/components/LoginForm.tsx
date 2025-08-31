@@ -11,7 +11,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
   const [organization, setOrganization] = useState("");
   const [project, setProject] = useState("");
   const [token, setToken] = useState("");
-  const [searchType, setSearchType] = useState<SearchType>('repositories');
+  const [searchType, setSearchType] = useState<SearchType>('projects');
   const [showToken, setShowToken] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -163,8 +163,18 @@ export default function PullRequestList({
                         {pr.isDraft && (
                           <span className="pr-draft-badge">DRAFT</span>
                         )}
+                        {!pr.titleValidation.isValid && (
+                          <span 
+                            className="pr-title-invalid-badge"
+                            title={`${pr.titleValidation.errorMessage}`}
+                          >
+                            ⚠️ TÍTULO
+                          </span>
+                        )}
                       </div>
-                      <h3 className="pr-card-title">{pr.title}</h3>
+                      <h3 className={`pr-card-title`}>
+                        {pr.title}
+                      </h3>
                     </div>
                     
                     <div className="pr-actions">

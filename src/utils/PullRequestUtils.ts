@@ -245,4 +245,64 @@ export class PullRequestUtils {
     });
   }
 
+  validatePRTitle(title: string): { isValid: boolean; errorMessage?: string } {
+    // Regex para validar: [HISTORIA|TASK:código] descrição
+    const titleRegex = /^\[(HISTORIA|TASK):[A-Z0-9-]+\]\s+.+$/;
+    
+    if (!title || title.trim() === '') {
+      return {
+        isValid: false,
+        errorMessage: 'Título não pode estar vazio'
+      };
+    }
+
+    if (!titleRegex.test(title)) {
+      // Verificar problemas específicos para dar feedback mais detalhado
+      if (!title.startsWith('[')) {
+        return {
+          isValid: false,
+          errorMessage: 'Título deve iniciar com "["'
+        };
+      }
+
+      if (!title.includes('HISTORIA:') && !title.includes('TASK:')) {
+        return {
+          isValid: false,
+          errorMessage: 'Título deve conter "HISTORIA:" ou "TASK:" após "["'
+        };
+      }
+
+      if (!title.includes(']')) {
+        return {
+          isValid: false,
+          errorMessage: 'Título deve conter "]" após o código'
+        };
+      }
+
+      const closingBracketIndex = title.indexOf(']');
+      const afterBracket = title.substring(closingBracketIndex + 1);
+      
+      if (!afterBracket || !afterBracket.trim()) {
+        return {
+          isValid: false,
+          errorMessage: 'Título deve conter uma descrição após "]"'
+        };
+      }
+
+      if (!afterBracket.startsWith(' ')) {
+        return {
+          isValid: false,
+          errorMessage: 'Deve haver um espaço entre "]" e a descrição'
+        };
+      }
+
+      return {
+        isValid: false,
+        errorMessage: 'Formato inválido. Use: [HISTORIA|TASK:código] descrição'
+      };
+    }
+
+    return { isValid: true };
+  }
+
 }

@@ -8,6 +8,7 @@ import { Repository, Project, ConnectionForm, PullRequest } from "./types";
 import "./App.css";
 import "./styles/search.css";
 import "./styles/status-filter.css";
+import "./styles/title-validation.css";
 
 type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
 
