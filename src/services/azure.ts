@@ -89,4 +89,28 @@ export class AzureDevOpsService {
       return [];
     }
   }
+
+  static async getMinePullRequests(
+    organization: string,
+    project: string,
+    userId: string,
+    token: string
+  ): Promise<PullRequest[]> {
+    try {
+      const url = `https://dev.azure.com/${organization}/${project}/_apis/git/pullrequests?searchCriteria.reviewerId=${userId}&searchCriteria.status=all&api-version=7.0`;
+      
+      const response = await axios.get<AzurePullRequestsResponse>(url, {
+        headers: {
+          "Authorization": this.createAuthHeader(token),
+          "Content-Type": "application/json"
+        },
+        timeout: 10000 // 10 segundos de timeout
+      });
+
+      return response.data.value;
+    } catch (error: unknown) {
+      console.error('Error fetching reviewer pull requests:', error);
+      return [];
+    }
+  }
 }
