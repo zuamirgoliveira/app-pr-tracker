@@ -8,7 +8,19 @@
 
 ## 📋 Sobre o Projeto
 
-O PR Tracker é uma aplicação web moderna desenvolvida em React/TypeScript para gerenciamento e monitoramento de Pull Requests do Azure DevOps. A aplicação oferece uma interface intuitiva para visualizar, filtrar e acompanhar o status de PRs em diferentes organizações, projetos e repositórios.
+O PR Tracker é uma **aplicação desktop nativa** desenvolvida com React/TypeScript e empacotada com **Tauri** para gerenciamento e monitoramento de Pull Requests do Azure DevOps. 
+
+**🖥️ Por que Desktop?**
+Diferentemente de uma aplicação web tradicional, o PR Tracker é compilado como um executável nativo que roda diretamente no seu sistema operacional (Windows, macOS ou Linux). Isso significa:
+- **Performance superior**: Acesso direto aos recursos do sistema
+- **Segurança aprimorada**: Tokens e dados ficam armazenados localmente
+- **Experiência nativa**: Interface integrada com o SO
+- **Sem dependência de navegador**: Funciona offline após instalação
+
+**🔧 Como funciona:**
+Utilizamos React/TypeScript para criar a interface de usuário, enquanto o Tauri converte tudo isso em um aplicativo desktop real, combinando a flexibilidade do desenvolvimento web com a performance de uma aplicação nativa.
+
+A aplicação oferece uma interface intuitiva para visualizar, filtrar e acompanhar o status de PRs em diferentes organizações, projetos e repositórios do Azure DevOps.
 
 ## ✨ Funcionalidades
 
