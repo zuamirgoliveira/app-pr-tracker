@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zuamirgoliveira/app-pr-tracker/main/public/banner-pr-tracker.png" alt="Logo Manta Ray Zap AI" width="500" />
+</p>
+
 # 🚀 PR Tracker - Pull Request Management Dashboard
 
 > **Nota:** Este projeto foi criado em VibeCoding utilizando a Claude Sonnet 4.
@@ -42,18 +46,23 @@ O PR Tracker é uma aplicação web moderna desenvolvida em React/TypeScript par
 ```
 src/
 ├── components/          # Componentes React
+│   ├── LoginForm.tsx
 │   ├── PullRequestList.tsx
 │   ├── RepositoryList.tsx
 │   └── ProjectList.tsx
 ├── controllers/         # Lógica de negócio
 │   └── PullRequestController.ts
 ├── utils/              # Utilitários e formatação
+│   ├── cache.ts
 │   └── PullRequestUtils.ts
 ├── types/              # Definições TypeScript
 │   └── index.ts
 └── styles/             # Estilos CSS
+    ├── checkbox.css
     ├── search.css
-    └── status-filter.css
+    ├── status-filter.css
+    ├── title-validation.css
+    └── typography.css
 ```
 
 ## 🚀 Como Executar
@@ -72,8 +81,14 @@ cd app-pr-tracker
 # Instale as dependências
 npm install
 
-# Execute o projeto
-npm start
+# Execute o projeto local navegador
+npm run dev
+
+# Execute o projeto local tauri (precisa ter rust e tauri cli instalados)
+npx run tauri dev
+
+# Crie o executável (src-tauri\target\release\app-pr-tracker.exe)
+npx run tauri build
 ```
 
 ### Configuração
