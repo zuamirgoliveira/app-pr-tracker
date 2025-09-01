@@ -14,8 +14,8 @@
       {
         "title": "PR Tracker",
         "width": 800,
-        "height": 600,
-		"resizable": false,
+        "height": 900,
+        "resizable": false,
         "fullscreen": false,
         "maximized": false,
         "decorations": true

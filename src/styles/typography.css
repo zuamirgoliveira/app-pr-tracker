@@ -1,0 +1,27 @@
+.michroma-regular {
+  font-family: "Michroma", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Apply Michroma font to title elements */
+.login-title,
+.projects-title,
+.repositories-title,
+.pr-title {
+  font-family: "Michroma", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: x-large;
+}
+
+
+.projects-subtitle,
+.repositories-subtitle,
+.login-subtitle {
+  font-family: "Lexend Deca", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: medium;
+}

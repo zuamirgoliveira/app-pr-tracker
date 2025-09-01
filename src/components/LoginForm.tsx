@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ConnectionForm, SearchType } from "../types";
+import { cacheUtils } from "../utils/cache";
 
 interface LoginFormProps {
   onSubmit: (form: ConnectionForm) => void;
@@ -13,6 +14,19 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
   const [token, setToken] = useState("");
   const [searchType, setSearchType] = useState<SearchType>('projects');
   const [showToken, setShowToken] = useState(false);
+  const [saveCredentials, setSaveCredentials] = useState(false);
+
+  // Load cached credentials on mount
+  useEffect(() => {
+    const cached = cacheUtils.load();
+    if (cached) {
+      setOrganization(cached.organization);
+      setProject(cached.project || "");
+      setToken(cached.token);
+      setSearchType(cached.searchType);
+      setSaveCredentials(true);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +41,27 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
       form.project = project.trim();
     }
 
+    // Handle cache based on checkbox
+    if (saveCredentials) {
+      const credentialsToCache = {
+        organization: organization.trim(),
+        project: searchType === 'repositories' ? project.trim() : undefined,
+        token: token.trim(),
+        searchType
+      };
+      cacheUtils.save(credentialsToCache);
+    } else {
+      cacheUtils.clear();
+    }
+
     onSubmit(form);
+  };
+
+  const handleSaveCredentialsChange = (checked: boolean) => {
+    setSaveCredentials(checked);
+    if (!checked) {
+      cacheUtils.clear();
+    }
   };
 
   const isFormValid = () => {
@@ -157,6 +191,20 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
             </div>
           </div>
 
+          {/* Save Credentials Checkbox */}
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={saveCredentials}
+                onChange={(e) => handleSaveCredentialsChange(e.target.checked)}
+                className="checkbox-input"
+                disabled={isLoading}
+              />
+              <span className="checkbox-text">Salvar informações localmente</span>
+            </label>
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -188,7 +236,12 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
             <svg className="alert-icon" viewBox="0 0 24 24">
               <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>O token não será armazenado permanentemente</span>
+            <span>
+              {saveCredentials 
+                ? "As informações serão salvas localmente no seu navegador" 
+                : "O token não será armazenado permanentemente"
+              }
+            </span>
           </div>
 
           {/* Help Link */}

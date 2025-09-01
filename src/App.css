@@ -76,7 +76,7 @@ body {
 .projects-container .page-banner,
 .repositories-container .page-banner,
 .pr-list-container .page-banner {
-  max-width: 500px;
+  max-width: 400px;
   width: 100%;
 }
 

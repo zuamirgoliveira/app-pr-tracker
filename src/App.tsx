@@ -9,6 +9,8 @@ import "./App.css";
 import "./styles/search.css";
 import "./styles/status-filter.css";
 import "./styles/title-validation.css";
+import "./styles/checkbox.css";
+import "./styles/typography.css";
 
 type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
 
