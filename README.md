@@ -15,7 +15,7 @@ Diferentemente de uma aplicação web tradicional, o PR Tracker é compilado com
 - **Performance superior**: Acesso direto aos recursos do sistema
 - **Segurança aprimorada**: Tokens e dados ficam armazenados localmente
 - **Experiência nativa**: Interface integrada com o SO
-- **Sem dependência de navegador**: Funciona offline após instalação
+- **Sem dependência de navegador**: Não funciona offline, pois precisa consumir as APIs da Azure Repos.
 
 **🔧 Como funciona:**
 Utilizamos React/TypeScript para criar a interface de usuário, enquanto o Tauri converte tudo isso em um aplicativo desktop real, combinando a flexibilidade do desenvolvimento web com a performance de uma aplicação nativa.
