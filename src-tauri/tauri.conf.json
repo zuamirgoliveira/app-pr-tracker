@@ -12,9 +12,13 @@
   "app": {
     "windows": [
       {
-        "title": "app-pr-tracker",
+        "title": "PR Tracker",
         "width": 800,
-        "height": 600
+        "height": 600,
+		"resizable": false,
+        "fullscreen": false,
+        "maximized": false,
+        "decorations": true
       }
     ],
     "security": {
