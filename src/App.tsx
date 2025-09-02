@@ -130,6 +130,27 @@ function App() {
     setError(null);
   };
 
+  const handleRefreshPullRequests = async () => {
+    if (!connectionInfo || !connectionInfo.project || !selectedRepository) return;
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const prs = await AzureDevOpsService.getPullRequests(
+        connectionInfo.organization,
+        connectionInfo.project,
+        selectedRepository.id,
+        connectionInfo.token
+      );
+      setPullRequests(prs);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao atualizar pull requests");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'login':
@@ -176,6 +197,7 @@ function App() {
             onBackToRepositories={handleBackToRepositories}
             onBackToProjects={connectionInfo.searchType === 'projects' ? handleBackToProjects : undefined}
             onBackToLogin={handleBackToLogin}
+            onRefreshPullRequests={handleRefreshPullRequests}
           />
         );
       

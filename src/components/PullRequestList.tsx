@@ -11,6 +11,7 @@ interface PullRequestListProps {
   onBackToRepositories: () => void;
   onBackToProjects?: () => void;
   onBackToLogin: () => void;
+  onRefreshPullRequests: () => void;
 }
 
 export default function PullRequestList({
@@ -21,7 +22,8 @@ export default function PullRequestList({
   isLoading = false,
   onBackToRepositories,
   onBackToProjects,
-  onBackToLogin
+  onBackToLogin,
+  onRefreshPullRequests
 }: PullRequestListProps) {
   const controller = useMemo(() => new PullRequestController(), []);
   const [statusFilter, setStatusFilter] = useState("Active");
@@ -98,6 +100,14 @@ export default function PullRequestList({
             disabled={isLoading}
           >
             ← Repositórios
+          </button>
+          <button
+            onClick={onRefreshPullRequests}
+            className="nav-btn"
+            disabled={isLoading}
+            title="Atualizar lista de PRs"
+          >
+            🔄 Atualizar
           </button>
         </div>
 
