@@ -1,4 +1,5 @@
-import { PullRequest, Repository } from "../types";
+import { PullRequest } from "../types/pull-request-dto";
+import { Repository } from "../types/repository-dto";
 import { PullRequestController } from "../controllers/PullRequestController";
 import { useMemo, useState } from "react";
 

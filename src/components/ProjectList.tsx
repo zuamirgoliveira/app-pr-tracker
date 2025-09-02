@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Project } from "../types";
+import { Project } from "../types/project-dto";
 
 interface ProjectListProps {
   projects: Project[];

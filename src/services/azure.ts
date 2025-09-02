@@ -1,5 +1,12 @@
 import axios from "axios";
-import { Repository, AzureReposResponse, PullRequest, AzurePullRequestsResponse, Project, AzureProjectsResponse } from "../types";
+import { Repository } from "../types/repository-dto";
+import { AzureReposResponse } from "../types/azure-repos-response-dto";
+import { PullRequest } from "../types/pull-request-dto";
+import { AzurePullRequestsResponse } from '../types/azure-pull-requests-response-dto';
+import { Project } from "../types/project-dto";
+import { AzureProjectsResponse } from "../types/azure-projects-response-dto";
+import { User } from "../types/user-dto";
+import { AzureUserResponse } from "../types/azure-user-response-dto";
 
 export class AzureDevOpsService {
   private static createAuthHeader(token: string): string {
@@ -111,6 +118,28 @@ export class AzureDevOpsService {
     } catch (error: unknown) {
       console.error('Error fetching reviewer pull requests:', error);
       return [];
+    }
+  }
+
+  static async getUser(
+    organization: string,
+    token: string
+  ): Promise<User | null> {
+    try {
+      const url = `https://vssps.dev.azure.com/${organization}/_apis/profile/profiles/me?api-version=7.0`;
+      
+      const response = await axios.get<AzureUserResponse>(url, {
+        headers: {
+          "Authorization": this.createAuthHeader(token),
+          "Content-Type": "application/json"
+        },
+        timeout: 10000 // 10 segundos de timeout
+      });
+
+      return response.data;
+    } catch (error: unknown) {
+      console.error('Error fetching user profile:', error);
+      return null;
     }
   }
 }

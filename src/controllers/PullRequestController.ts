@@ -1,4 +1,4 @@
-import { PullRequest } from "../types";
+import { PullRequest } from "../types/pull-request-dto";
 import { PullRequestUtils } from "../utils/PullRequestUtils";
 
 export class PullRequestController {

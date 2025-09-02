@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ConnectionForm, SearchType } from "../types";
+import { ConnectionForm } from "../types/connection-form-dto";
+import { SearchType } from "../types/search-type-dto";
 import { cacheUtils } from "../utils/cache";
 
 interface LoginFormProps {
