@@ -97,7 +97,7 @@ export class AzureDevOpsService {
     }
   }
 
-  static async getMinePullRequests(
+  static async getMyPullRequests(
     organization: string,
     project: string,
     userId: string,
@@ -105,7 +105,7 @@ export class AzureDevOpsService {
   ): Promise<PullRequest[]> {
     try {
       const url = `https://dev.azure.com/${organization}/${project}/_apis/git/pullrequests?searchCriteria.reviewerId=${userId}&searchCriteria.status=all&api-version=7.0`;
-      
+
       const response = await axios.get<AzurePullRequestsResponse>(url, {
         headers: {
           "Authorization": this.createAuthHeader(token),
@@ -113,7 +113,7 @@ export class AzureDevOpsService {
         },
         timeout: 10000 // 10 segundos de timeout
       });
-
+      
       return response.data.value;
     } catch (error: unknown) {
       console.error('Error fetching reviewer pull requests:', error);
