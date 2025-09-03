@@ -159,6 +159,7 @@ export default function MyPullRequestList({
                           </span>
                         )}
                       </div>
+                      <span className="pr-id">{pr.repository.name}</span>
                       <h3 className={`pr-card-title`}>
                         {pr.title}
                       </h3>

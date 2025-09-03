@@ -23,6 +23,7 @@ function App() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  const [myPullRequests, setMyPullRequests] = useState<PullRequest[]>([]);
   const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
   const [connectionInfo, setConnectionInfo] = useState<ConnectionForm | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +46,12 @@ function App() {
         if (!form.project) {
           throw new Error('Projeto é obrigatório para buscar seus PRs');
         }
+        const myPRList = await AzureDevOpsService.getMyPullRequests(
+          form.organization,
+          form.project,
+          form.token
+        );
+        setMyPullRequests(myPRList);
         setConnectionInfo(form);
         setCurrentPage('myPullRequests');
       } else {
@@ -168,16 +175,9 @@ function App() {
     setError(null);
 
     try {
-      const user = await AzureDevOpsService.getUser(connectionInfo.organization, connectionInfo.token);
-      
-      if (!user || !user.id) {
-        throw new Error("Não foi possível obter o usuário autenticado.");
-      }
-
       const prs = await AzureDevOpsService.getMyPullRequests(
         connectionInfo.organization,
         connectionInfo.project,
-        user.id,
         connectionInfo.token
       );
       setPullRequests(prs);
@@ -241,7 +241,7 @@ function App() {
       case 'myPullRequests':
         return connectionInfo && (
           <MyPullRequestList
-            pullRequests={pullRequests}
+            pullRequests={myPullRequests}
             organization={connectionInfo.organization}
             project={connectionInfo.project || ''}
             isLoading={isLoading}
