@@ -3,8 +3,12 @@ import LoginForm from "./components/LoginForm";
 import ProjectList from "./components/ProjectList";
 import RepositoryList from "./components/RepositoryList";
 import PullRequestList from "./components/PullRequestList";
+import MyPullRequestList from "./components/MyPullRequestList";
 import { AzureDevOpsService } from "./services/azure";
-import { Repository, Project, ConnectionForm, PullRequest } from "./types";
+import { Repository } from "./types/repository-dto";
+import { Project } from "./types/project-dto";
+import { ConnectionForm } from "./types/connection-form-dto";
+import { PullRequest } from "./types/pull-request-dto";
 import "./App.css";
 import "./styles/search.css";
 import "./styles/status-filter.css";
@@ -12,13 +16,14 @@ import "./styles/title-validation.css";
 import "./styles/checkbox.css";
 import "./styles/typography.css";
 
-type Page = 'login' | 'projects' | 'repositories' | 'pullrequests';
+type Page = 'login' | 'projects' | 'repositories' | 'pullrequests' | 'myPullRequests';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('login');
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  const [myPullRequests, setMyPullRequests] = useState<PullRequest[]>([]);
   const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
   const [connectionInfo, setConnectionInfo] = useState<ConnectionForm | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +42,18 @@ function App() {
         setProjects(projectList);
         setConnectionInfo(form);
         setCurrentPage('projects');
+      } else if (form.searchType === 'myPullRequests') {
+        if (!form.project) {
+          throw new Error('Projeto é obrigatório para buscar seus PRs');
+        }
+        const myPRList = await AzureDevOpsService.getMyPullRequests(
+          form.organization,
+          form.project,
+          form.token
+        );
+        setMyPullRequests(myPRList);
+        setConnectionInfo(form);
+        setCurrentPage('myPullRequests');
       } else {
         if (!form.project) {
           throw new Error('Projeto é obrigatório para buscar repositórios');
@@ -151,6 +168,26 @@ function App() {
     }
   };
 
+   const handleRefreshMyPullRequests = async () => {
+    if (!connectionInfo || !connectionInfo.project) return;
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const prs = await AzureDevOpsService.getMyPullRequests(
+        connectionInfo.organization,
+        connectionInfo.project,
+        connectionInfo.token
+      );
+      setPullRequests(prs);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao atualizar pull requests");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'login':
@@ -198,6 +235,18 @@ function App() {
             onBackToProjects={connectionInfo.searchType === 'projects' ? handleBackToProjects : undefined}
             onBackToLogin={handleBackToLogin}
             onRefreshPullRequests={handleRefreshPullRequests}
+          />
+        );
+      
+      case 'myPullRequests':
+        return connectionInfo && (
+          <MyPullRequestList
+            pullRequests={myPullRequests}
+            organization={connectionInfo.organization}
+            project={connectionInfo.project || ''}
+            isLoading={isLoading}
+            onBackToLogin={handleBackToLogin}
+            onRefreshPullRequests={handleRefreshMyPullRequests}
           />
         );
       

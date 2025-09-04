@@ -1,8 +1,10 @@
-interface CachedCredentials {
+import { SearchType } from '../types/search-type-dto';
+
+export interface CachedCredentials {
   organization: string;
   project?: string;
   token: string;
-  searchType: 'projects' | 'repositories';
+  searchType: SearchType;
 }
 
 const CACHE_KEY = 'azure-repos-credentials';

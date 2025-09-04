@@ -1,1 +1,1 @@
-export type SearchType = 'projects' | 'repositories';
+export type SearchType = 'projects' | 'repositories' | 'myPullRequests';

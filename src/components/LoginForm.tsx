@@ -38,7 +38,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
       searchType
     };
 
-    if (searchType === 'repositories') {
+    if (searchType === 'repositories' || searchType === 'myPullRequests') {
       form.project = project.trim();
     }
 
@@ -46,7 +46,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
     if (saveCredentials) {
       const credentialsToCache = {
         organization: organization.trim(),
-        project: searchType === 'repositories' ? project.trim() : undefined,
+        project: searchType === 'repositories' || searchType === 'myPullRequests' ? project.trim() : undefined,
         token: token.trim(),
         searchType
       };
@@ -104,7 +104,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
                   onChange={(e) => setSearchType(e.target.value as SearchType)}
                   className="radio-input"
                 />
-                <span className="radio-text">Buscar Projetos</span>
+                <span className="radio-text">Projetos</span>
               </label>
               <label className="radio-label">
                 <input
@@ -115,7 +115,18 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
                   onChange={(e) => setSearchType(e.target.value as SearchType)}
                   className="radio-input"
                 />
-                <span className="radio-text">Buscar Repositórios</span>
+                <span className="radio-text">Repositórios</span>
+              </label>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="searchType"
+                  value="myPullRequests"
+                  checked={searchType === 'myPullRequests'}
+                  onChange={(e) => setSearchType(e.target.value as SearchType)}
+                  className="radio-input"
+                />
+                <span className="radio-text">Meus PRs</span>
               </label>
             </div>
           </div>
@@ -139,6 +150,25 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
 
           {/* Project - Only show if searching repositories */}
           {searchType === 'repositories' && (
+            <div className="form-group">
+              <label htmlFor="project" className="form-label">
+                Projeto *
+              </label>
+              <input
+                id="project"
+                type="text"
+                value={project}
+                onChange={(e) => setProject(e.target.value)}
+                placeholder="ex: meu-projeto"
+                className="form-input"
+                disabled={isLoading}
+                required
+              />
+            </div>
+          )}
+
+          {/* Project - Show for myPullRequests as well */}
+          {searchType === 'myPullRequests' && (
             <div className="form-group">
               <label htmlFor="project" className="form-label">
                 Projeto *
@@ -215,10 +245,14 @@ export default function LoginForm({ onSubmit, isLoading = false, error }: LoginF
             {isLoading ? (
               <>
                 <div className="spinner" />
-                {searchType === 'projects' ? 'Buscando Projetos...' : 'Buscando Repositórios...'}
+                {searchType === 'projects' ? 'Buscando Projetos...' : 
+                 searchType === 'repositories' ? 'Buscando Repositórios...' : 
+                 'Buscando meus PRs...'}
               </>
             ) : (
-              searchType === 'projects' ? 'Buscar Projetos' : 'Buscar Repositórios'
+              searchType === 'projects' ? 'Buscar Projetos' : 
+              searchType === 'repositories' ? 'Buscar Repositórios' :
+              'Buscar meus PRs'
             )}
           </button>
 
