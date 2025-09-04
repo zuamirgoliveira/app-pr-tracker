@@ -1,9 +1,9 @@
 import { useState } from "react";
 import LoginForm from "./ui/pages/login/Login";
-import ProjectList from "./ui/pages/projects/ProjectList";
-import RepositoryList from "./ui/pages/repositories/RepositoryList";
-import PullRequestList from "./ui/pages/pullrequests/PullRequestList";
-import MyPullRequestList from "./ui/pages/my-pullrequest/MyPullRequestList";
+import ProjectList from "./ui/pages/projects/Project";
+import RepositoryList from "./ui/pages/repositories/Repository";
+import PullRequestList from "./ui/pages/pullrequests/PullRequest";
+import MyPullRequestList from "./ui/pages/my-pullrequest/MyPullRequest";
 import { AzureProjectService } from "./infra/api/azure/azure-project.service";
 import { AzureRepositoryService } from "./infra/api/azure/azure-repository.service";
 import { AzurePullRequestService } from "./infra/api/azure/azure-pullrequest.service";

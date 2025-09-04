@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Repository } from "../../types/repository-dto";
+import { Repository } from "../../../core/entities/repository";
 
 interface RepositoryListProps {
   repositories: Repository[];
