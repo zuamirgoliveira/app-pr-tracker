@@ -1,20 +1,22 @@
 import { useState } from "react";
-import LoginForm from "./components/LoginForm";
-import ProjectList from "./components/ProjectList";
-import RepositoryList from "./components/RepositoryList";
-import PullRequestList from "./components/PullRequestList";
-import MyPullRequestList from "./components/MyPullRequestList";
-import { AzureDevOpsService } from "./services/azure";
-import { Repository } from "./types/repository-dto";
-import { Project } from "./types/project-dto";
-import { ConnectionForm } from "./types/connection-form-dto";
-import { PullRequest } from "./types/pull-request-dto";
+import LoginForm from "./ui/pages/login/Login";
+import ProjectList from "./ui/pages/projects/ProjectList";
+import RepositoryList from "./ui/pages/repositories/RepositoryList";
+import PullRequestList from "./ui/pages/pullrequests/PullRequestList";
+import MyPullRequestList from "./ui/pages/my-pullrequest/MyPullRequestList";
+import { AzureProjectService } from "./infra/api/azure/azure-project.service";
+import { AzureRepositoryService } from "./infra/api/azure/azure-repository.service";
+import { AzurePullRequestService } from "./infra/api/azure/azure-pullrequest.service";
+import { Repository } from "./core/entities/repository";
+import { Project } from "./core/entities/project";
+import { ConnectionForm } from "./core/entities/connection-form";
+import { PullRequest } from "./core/entities/pull-request";
 import "./App.css";
-import "./styles/search.css";
-import "./styles/status-filter.css";
-import "./styles/title-validation.css";
-import "./styles/checkbox.css";
-import "./styles/typography.css";
+import "./ui/styles/search.css";
+import "./ui/styles/status-filter.css";
+import "./ui/styles/title-validation.css";
+import "./ui/styles/checkbox.css";
+import "./ui/styles/typography.css";
 
 type Page = 'login' | 'projects' | 'repositories' | 'pullrequests' | 'myPullRequests';
 
@@ -35,7 +37,7 @@ function App() {
 
     try {
       if (form.searchType === 'projects') {
-        const projectList = await AzureDevOpsService.getProjects(
+        const projectList = await AzureProjectService.getProjects(
           form.organization,
           form.token
         );
@@ -46,7 +48,7 @@ function App() {
         if (!form.project) {
           throw new Error('Projeto é obrigatório para buscar seus PRs');
         }
-        const myPRList = await AzureDevOpsService.getMyPullRequests(
+        const myPRList = await AzurePullRequestService.getMyPullRequests(
           form.organization,
           form.project,
           form.token
@@ -58,7 +60,7 @@ function App() {
         if (!form.project) {
           throw new Error('Projeto é obrigatório para buscar repositórios');
         }
-        const repos = await AzureDevOpsService.getRepositories(
+        const repos = await AzureRepositoryService.getRepositories(
           form.organization,
           form.project,
           form.token
@@ -81,7 +83,7 @@ function App() {
     setError(null);
 
     try {
-      const repos = await AzureDevOpsService.getRepositories(
+      const repos = await AzureRepositoryService.getRepositories(
         connectionInfo.organization,
         project.name,
         connectionInfo.token
@@ -107,7 +109,7 @@ function App() {
     setSelectedRepository(repository);
 
     try {
-      const prs = await AzureDevOpsService.getPullRequests(
+      const prs = await AzurePullRequestService.getPullRequests(
         connectionInfo.organization,
         connectionInfo.project,
         repository.id,
@@ -154,7 +156,7 @@ function App() {
     setError(null);
 
     try {
-      const prs = await AzureDevOpsService.getPullRequests(
+      const prs = await AzurePullRequestService.getPullRequests(
         connectionInfo.organization,
         connectionInfo.project,
         selectedRepository.id,
@@ -175,7 +177,7 @@ function App() {
     setError(null);
 
     try {
-      const prs = await AzureDevOpsService.getMyPullRequests(
+      const prs = await AzurePullRequestService.getMyPullRequests(
         connectionInfo.organization,
         connectionInfo.project,
         connectionInfo.token

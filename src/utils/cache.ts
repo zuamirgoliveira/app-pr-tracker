@@ -1,4 +1,4 @@
-import { SearchType } from '../types/search-type-dto';
+import { SearchType } from '../core/entities/search-type';
 
 export interface CachedCredentials {
   organization: string;

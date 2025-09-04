@@ -1,4 +1,4 @@
-import { Repository } from "./repository-dto";
+import { Repository } from "../../../../core/entities/repository";
 
 export interface AzureReposResponse {
   value: Repository[];

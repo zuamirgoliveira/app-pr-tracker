@@ -1,7 +1,7 @@
-import { PullRequest } from "../types/pull-request-dto";
+import { PullRequest } from "../core/entities/pull-request";
 import { PullRequestUtils } from "../utils/PullRequestUtils";
 
-export class PullRequestController {
+export class MyPullRequestController {
   private utils: PullRequestUtils;
 
   constructor() {

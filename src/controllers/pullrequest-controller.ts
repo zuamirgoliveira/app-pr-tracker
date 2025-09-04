@@ -1,7 +1,20 @@
-import { PullRequest } from "../types/pull-request-dto";
+import { PullRequest } from "../core/entities/pull-request";
 import { PullRequestUtils } from "../utils/PullRequestUtils";
 
-export class MyPullRequestController {
+export interface ProcessedPullRequest extends PullRequest {
+  filteredReviewers: any[];
+  sla: any;
+  slaColorClass: string;
+  webUrl: string;
+  formattedCreationDate: string;
+  titleValidation: any;
+  statusData: {
+    color: string;
+    icon: string;
+  };
+}
+
+export class PullRequestController {
   private utils: PullRequestUtils;
 
   constructor() {
@@ -23,7 +36,7 @@ export class MyPullRequestController {
     };
   }
 
-  processPullRequestData(pr: PullRequest, organization: string, project: string) {
+  processPullRequestData(pr: PullRequest, organization: string, project: string): ProcessedPullRequest {
     const filteredReviewers = this.utils.filterReviewers(pr.reviewers || []);
     const closedDate = (pr.status.toLowerCase() === 'abandoned' || pr.status.toLowerCase() === 'completed') 
       ? pr.closedDate 
@@ -32,6 +45,7 @@ export class MyPullRequestController {
     const slaColorClass = this.utils.getSLAColorClass(pr.creationDate, closedDate);
     const webUrl = this.utils.formatWebUrl(organization, project, pr);
     const titleValidation = this.utils.validatePRTitle(pr.title);
+    const statusData = this.processStatusData(pr.status);
     
     return {
       ...pr,
@@ -40,7 +54,8 @@ export class MyPullRequestController {
       slaColorClass,
       webUrl,
       formattedCreationDate: this.utils.formatDate(pr.creationDate),
-      titleValidation
+      titleValidation,
+      statusData
     };
   }
 

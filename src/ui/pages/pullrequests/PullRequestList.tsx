@@ -1,6 +1,6 @@
-import { PullRequest } from "../types/pull-request-dto";
-import { Repository } from "../types/repository-dto";
-import { PullRequestController } from "../controllers/PullRequestController";
+import { PullRequest } from "../../../core/entities/pull-request";
+import { Repository } from "../../../core/entities/repository";
+import { PullRequestController } from "../../../controllers/pullrequest-controller";
 import { useMemo, useState } from "react";
 
 interface PullRequestListProps {

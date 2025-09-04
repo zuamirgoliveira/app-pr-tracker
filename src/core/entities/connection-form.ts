@@ -1,4 +1,4 @@
-import { SearchType } from "./search-type-dto";
+import { SearchType } from "./search-type";
 
 export interface ConnectionForm {
   organization: string;
