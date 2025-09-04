@@ -151,8 +151,8 @@ export default function Login({ onSubmit, isLoading = false, error }: LoginProps
             type="info" 
             message={
               saveCredentials 
-                ? "As informações serão salvas localmente no seu aplicativo" 
-                : "O token não será armazenado permanentemente"
+                ? "As dados serão salvos localmente no app" 
+                : "O token não será armazenado"
             }
           />
 
