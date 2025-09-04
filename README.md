@@ -53,30 +53,6 @@ A aplicação oferece uma interface intuitiva para visualizar, filtrar e acompan
 - **State Management**: React Hooks (useState, useMemo)
 - **API**: Azure DevOps REST API
 
-## 📁 Estrutura do Projeto
-
-```
-src/
-├── components/          # Componentes React
-│   ├── LoginForm.tsx
-│   ├── PullRequestList.tsx
-│   ├── RepositoryList.tsx
-│   └── ProjectList.tsx
-├── controllers/         # Lógica de negócio
-│   └── PullRequestController.ts
-├── utils/              # Utilitários e formatação
-│   ├── cache.ts
-│   └── PullRequestUtils.ts
-├── types/              # Definições TypeScript
-│   └── index.ts
-└── styles/             # Estilos CSS
-    ├── checkbox.css
-    ├── search.css
-    ├── status-filter.css
-    ├── title-validation.css
-    └── typography.css
-```
-
 ## 🚀 Como Executar
 
 ### Pré-requisitos
