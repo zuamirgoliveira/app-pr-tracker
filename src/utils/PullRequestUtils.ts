@@ -1,4 +1,4 @@
-import { PullRequest } from "../infra/api/azure/dto";
+import { PullRequest } from "../core/entities/pull-request";
 
 interface SLAInfo {
   value: number;
