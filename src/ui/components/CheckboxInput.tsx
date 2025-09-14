@@ -5,19 +5,24 @@ interface CheckboxInputProps {
   label: string;
 }
 
-export function CheckboxInput({ checked, onChange, disabled = false, label }: CheckboxInputProps) {
+export function CheckboxInput({
+  checked,
+  onChange,
+  disabled = false,
+  label,
+}: CheckboxInputProps) {
   return (
-    <div className="form-group">
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={(e) => onChange(e.target.checked)}
-          className="checkbox-input"
-          disabled={disabled}
-        />
-        <span className="checkbox-text">{label}</span>
-      </label>
-    </div>
+    <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 my-2">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
+        className="h-4 w-4 cursor-pointer accent-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+      />
+      <span className="font-normal hover:text-blue-600 disabled:text-gray-400 disabled:cursor-not-allowed">
+        {label}
+      </span>
+    </label>
   );
 }

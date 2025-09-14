@@ -15,14 +15,14 @@ export function PullRequestList({
   statusFilter,
   controller,
   onCopyToClipboard,
-  onOpenPR
+  onOpenPR,
 }: PullRequestListProps) {
   if (pullRequests.length === 0) {
     return <EmptyMessage statusFilter={statusFilter} />;
   }
 
   return (
-    <div className="pr-list">
+    <div className="flex max-h-[60vh] flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
       {pullRequests.map((pr) => (
         <PullRequestCard
           key={pr.pullRequestId}

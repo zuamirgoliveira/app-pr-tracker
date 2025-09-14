@@ -1,0 +1,105 @@
+/* src/index.css (no topo, antes dos @tailwind) */
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700&family=Michroma&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Base ===== */
+@layer base {
+  html, body {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-slate-50 leading-relaxed transition-colors font-sans;
+  }
+
+  .dark body, body.dark {
+    @apply bg-gradient-to-br from-slate-900 to-slate-800 text-slate-50;
+  }
+
+  #root {
+    @apply max-w-7xl mx-auto p-8 min-h-screen flex flex-col items-center justify-start w-full;
+  }
+}
+
+/* ===== Components ===== */
+@layer components {
+  /* ---------- Banner ---------- */
+  .banner-container { @apply mb-6 flex items-center justify-center; }
+  .page-banner {
+    @apply h-auto max-w-xs md:max-w-sm lg:max-w-lg w-full rounded-2xl border-2 border-blue-600/30 shadow-2xl
+           transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl hover:border-blue-600/50;
+  }
+  .login-container .page-banner { @apply max-w-sm; }
+
+  /* ---------- Form ---------- */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg border border-slate-300 bg-white placeholder:text-slate-400
+           transition duration-300 outline-none
+           focus-visible:border-blue-600 focus-visible:ring-4 focus-visible:ring-blue-600/10
+           dark:bg-slate-900/50 dark:text-slate-50 dark:border-slate-600 dark:focus-visible:border-blue-500;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-3 px-6 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide
+           transition-all duration-300 cursor-pointer select-none
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply w-full text-white shadow-lg shadow-blue-600/40 hover:shadow-xl hover:shadow-blue-600/50 hover:-translate-y-0.5
+           bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-600 dark:to-blue-500;
+  }
+  .btn-secondary {
+    @apply text-slate-50 bg-slate-700/80 border border-slate-600 hover:bg-slate-700 hover:border-blue-600;
+  }
+  .btn-sm { @apply px-4 py-2 text-xs; }
+
+  /* ---------- Cards ---------- */
+  .main-container {
+    @apply w-full max-w-5xl rounded-2xl border p-6 md:p-8 mb-6
+         shadow-2xl bg-white/80 backdrop-blur-xl border-slate-200
+         dark:bg-slate-800/10 dark:border-slate-600;
+  }
+  .card {
+    @apply rounded-xl border p-6 transition-all duration-300
+           bg-white border-slate-200 hover:-translate-y-0.5 hover:shadow-lg
+           dark:bg-slate-700/30 dark:border-slate-600 dark:hover:bg-slate-700/50 dark:hover:border-blue-600/50 dark:hover:shadow-blue-600/15;
+  }
+  .card-clickable { @apply cursor-pointer; }
+
+  /* ---------- Alerts ---------- */
+  .alert      { @apply flex items-center gap-3 p-4 rounded-lg text-sm; }
+  .alert-error{ @apply bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300; }
+  .alert-info { @apply bg-blue-500/10 border border-blue-500/30 text-slate-600 dark:text-slate-400; }
+
+  /* ---------- Navigation ---------- */
+  .nav-btn {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg text-sm cursor-pointer
+           bg-slate-200 border border-slate-300
+           hover:bg-slate-100 hover:border-blue-600 hover:-translate-y-0.5
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500
+           dark:bg-slate-700/80 dark:text-slate-50 dark:border-slate-600
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* ---------- Loading ---------- */
+  .loading-overlay { @apply absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl bg-slate-900/80 backdrop-blur-sm; }
+  .spinner { @apply h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white; }
+}
+
+/* ===== Utilities ===== */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar        { @apply w-2; }
+  .custom-scrollbar::-webkit-scrollbar-track  { @apply rounded bg-slate-200 dark:bg-slate-900/50; }
+  .custom-scrollbar::-webkit-scrollbar-thumb  { @apply rounded bg-blue-500/40 hover:bg-blue-500/60; }
+
+  .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+}
+
+/* ===== Layout helpers ===== */
+.projects-list { @apply flex max-h-[60vh] flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar; }
+.repositories-grid { @apply grid gap-4; }

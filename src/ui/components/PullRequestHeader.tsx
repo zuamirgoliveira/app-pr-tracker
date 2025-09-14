@@ -11,19 +11,20 @@ export function PullRequestHeader({
   organization,
   project,
   filteredCount,
-  statusFilter
+  statusFilter,
 }: PullRequestHeaderProps) {
   return (
-    <div className="pr-header">
-      <Banner 
-        src="/banner-pr-tracker.png" 
-        alt="PR Tracker Banner" 
-      />
-      <h1 className="pr-title">Meus Pull Requests</h1>
-      <p className="pr-meta-info">
+    <header className="flex flex-col items-center justify-center gap-4 text-center">
+      <Banner src="/banner-pr-tracker.png" alt="PR Tracker Banner" />
+
+      <h1 className="font-michroma text-heading-1 text-slate-900 dark:text-slate-50">
+        Meus Pull Requests
+      </h1>
+
+      <p className="text-sm text-slate-600 dark:text-slate-400">
         {organization} / {project} • {filteredCount} PR(s) encontrado(s)
         {statusFilter !== "ALL" && ` (${statusFilter})`}
       </p>
-    </div>
+    </header>
   );
 }

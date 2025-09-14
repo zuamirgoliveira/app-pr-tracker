@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface TokenInputProps {
   value: string;
@@ -10,37 +11,36 @@ export function TokenInput({ value, onChange, disabled = false }: TokenInputProp
   const [showToken, setShowToken] = useState(false);
 
   return (
-    <div className="form-group">
-      <label htmlFor="token" className="form-label">
+    <div className="mb-4 flex flex-col gap-2">
+      <label
+        htmlFor="token"
+        className="text-sm font-medium text-slate-700 dark:text-slate-300"
+      >
         Personal Access Token (PAT) *
       </label>
-      <div className="token-input-container">
+
+      <div className="relative flex w-full items-center">
         <input
           id="token"
           type={showToken ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Insira seu PAT Token"
-          className="form-input token-input"
           disabled={disabled}
           required
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 pr-10 text-sm text-slate-800 placeholder:text-slate-400 transition duration-300 outline-none
+                     focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10
+                     disabled:cursor-not-allowed disabled:opacity-60
+                     dark:border-slate-600 dark:bg-slate-900/50 dark:text-slate-50 dark:placeholder:text-slate-500"
         />
+
         <button
           type="button"
           onClick={() => setShowToken(!showToken)}
-          className="toggle-visibility-btn"
           disabled={disabled}
+          className="absolute right-2 flex h-6 w-6 items-center justify-center text-slate-500 transition hover:text-slate-700 disabled:cursor-not-allowed dark:text-slate-400 dark:hover:text-slate-200"
         >
-          {showToken ? (
-            <svg className="visibility-icon" viewBox="0 0 24 24">
-              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-          ) : (
-            <svg className="visibility-icon" viewBox="0 0 24 24">
-              <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-            </svg>
-          )}
+          {showToken ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
         </button>
       </div>
     </div>

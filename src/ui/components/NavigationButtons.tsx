@@ -1,31 +1,37 @@
-interface NavigationButtonsProps {
-  onBackToLogin: () => void;
-  onRefreshPullRequests: () => void;
-  isLoading: boolean;
-}
+import { ArrowLeft, RefreshCw } from "lucide-react";
+import { Button } from "../../ui/components/Button";
 
 export function NavigationButtons({
   onBackToLogin,
   onRefreshPullRequests,
-  isLoading
-}: NavigationButtonsProps) {
+  isLoading,
+}: {
+  onBackToLogin: () => void;
+  onRefreshPullRequests: () => void;
+  isLoading: boolean;
+}) {
   return (
-    <div className="pr-nav-buttons">
-      <button
+    <div className="flex gap-2">
+      <Button
         onClick={onBackToLogin}
-        className="nav-btn"
         disabled={isLoading}
+        variant="secondary"
+        size="md"
       >
-        ← Login
-      </button>
-      <button
+        <ArrowLeft className="h-4 w-4" />
+        Login
+      </Button>
+
+      <Button
         onClick={onRefreshPullRequests}
-        className="nav-btn"
         disabled={isLoading}
         title="Atualizar lista de PRs"
+        variant="secondary"
+        size="md"
       >
-        🔄 Atualizar
-      </button>
+        <RefreshCw className="h-4 w-4" />
+        Atualizar
+      </Button>
     </div>
   );
 }

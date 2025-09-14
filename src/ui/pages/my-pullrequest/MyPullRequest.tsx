@@ -1,6 +1,9 @@
-import { PullRequest } from "../../../core/entities/pull-request";
-import { PullRequestController, ProcessedPullRequest } from "../../../controllers/pullrequest-controller";
 import { useMemo, useState } from "react";
+import { PullRequest } from "../../../core/entities/pull-request";
+import {
+  PullRequestController,
+  ProcessedPullRequest,
+} from "../../../controllers/pullrequest-controller";
 import { PullRequestHeader } from "../../components/PullRequestHeader";
 import { NavigationButtons } from "../../components/NavigationButtons";
 import { StatusFilter } from "../../components/StatusFilter";
@@ -22,26 +25,28 @@ export default function MyPullRequestList({
   project,
   isLoading = false,
   onBackToLogin,
-  onRefreshPullRequests
+  onRefreshPullRequests,
 }: MyPullRequestListProps) {
   const controller = useMemo(() => new PullRequestController(), []);
   const [statusFilter, setStatusFilter] = useState("Active");
 
   const availableStatuses = useMemo(() => {
-    const statuses = Array.from(new Set(pullRequests.map(pr => pr.status)));
+    const statuses = Array.from(new Set(pullRequests.map((pr) => pr.status)));
     return ["ALL", ...statuses];
   }, [pullRequests]);
 
   const filteredPullRequests = useMemo(() => {
-    if (statusFilter === "ALL") {
-      return pullRequests;
-    }
-    return pullRequests.filter(pr => pr.status.toLowerCase() === statusFilter.toLowerCase());
+    if (statusFilter === "ALL") return pullRequests;
+    return pullRequests.filter(
+      (pr) => pr.status.toLowerCase() === statusFilter.toLowerCase()
+    );
   }, [pullRequests, statusFilter]);
 
   const processedPullRequests = useMemo(() => {
-    const sortedPullRequests = controller.sortPullRequests(filteredPullRequests);
-    return sortedPullRequests.map(pr => 
+    const sortedPullRequests = controller.sortPullRequests(
+      filteredPullRequests
+    );
+    return sortedPullRequests.map((pr) =>
       controller.processPullRequestData(pr, organization, project)
     );
   }, [filteredPullRequests, organization, project, controller]);
@@ -55,37 +60,41 @@ export default function MyPullRequestList({
   };
 
   return (
-    <div className="pr-list-container">
-      <PullRequestHeader
-        organization={organization}
-        project={project}
-        filteredCount={filteredPullRequests.length}
-        statusFilter={statusFilter}
-      />
-
-      <div className="pr-main-container">
-        <NavigationButtons
-          onBackToLogin={onBackToLogin}
-          onRefreshPullRequests={onRefreshPullRequests}
-          isLoading={isLoading}
-        />
-
-        <StatusFilter
+    <div className="min-h-screen w-full flex justify-center px-6 md:px-10 lg:px-16 py-8">
+      <div className="w-full max-w-6xl">
+        {/* Header */}
+        <PullRequestHeader
+          organization={organization}
+          project={project}
+          filteredCount={filteredPullRequests.length}
           statusFilter={statusFilter}
-          availableStatuses={availableStatuses}
-          onStatusFilterChange={setStatusFilter}
-          isLoading={isLoading}
         />
 
-        <PullRequestList
-          pullRequests={processedPullRequests}
-          statusFilter={statusFilter}
-          controller={controller}
-          onCopyToClipboard={handleCopyToClipboard}
-          onOpenPR={handleOpenPR}
-        />
+        {/* Main */}
+        <div className="space-y-6">
+          <NavigationButtons
+            onBackToLogin={onBackToLogin}
+            onRefreshPullRequests={onRefreshPullRequests}
+            isLoading={isLoading}
+          />
 
-        {isLoading && <LoadingOverlay />}
+          <StatusFilter
+            statusFilter={statusFilter}
+            availableStatuses={availableStatuses}
+            onStatusFilterChange={setStatusFilter}
+            isLoading={isLoading}
+          />
+
+          <PullRequestList
+            pullRequests={processedPullRequests}
+            statusFilter={statusFilter}
+            controller={controller}
+            onCopyToClipboard={handleCopyToClipboard}
+            onOpenPR={handleOpenPR}
+          />
+
+          {isLoading && <LoadingOverlay />}
+        </div>
       </div>
     </div>
   );
